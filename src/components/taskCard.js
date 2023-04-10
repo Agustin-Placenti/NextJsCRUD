@@ -1,18 +1,35 @@
 import { useRouter } from "next/navigation";
+import { useTasks } from "@/context/TasksContext";
+import { toast } from "react-hot-toast";
 
 export const TaskCard = ({ task }) => {
+  const { deleteTask } = useTasks();
   const router = useRouter();
+
   return (
     <div
       key={task.id}
-      style={{ background: "#202020", color: "white" }}
+      className="bg-gray-700 hover:bg-gray-600 cursor-pointer px-20 py-5 m-2"
       onClick={() => router.push(`/edit/${task.id}`)}
     >
-      <h1>
-        {task.id} {task.title}
-      </h1>
-      <button>delete</button>
-      <p> {task.description}</p>
+      <div className="flex justify-between">
+        <h1>{task.title}</h1>
+        <button
+        className="bg-red-700 hover:bg-red-600 px-3 py-1 inline-flex items-center"
+          onClick={(e) => {
+            e.stopPropagation();
+            const accept = window.confirm("are you sure");
+            if (accept) {
+              deleteTask(task.id);
+              toast.success("task deleted succesfully");
+            }
+          }}
+        >
+          delete
+        </button>
+      </div>
+      <p className="text-gray-300"> {task.description}</p>
+      <span className="text-gray-400 text-xs">{task.id}</span>
     </div>
   );
 };
